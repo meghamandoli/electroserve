@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import './App.css'
 
 const companies = [
@@ -69,22 +69,32 @@ const technicians = [
 ]
 
 const steps = ['Choose', 'Details', 'Technician', 'Confirm']
+const storageKey = 'electroserveBookings'
 
 function App() {
   const [selectedCompany, setSelectedCompany] = useState(companies[0].id)
   const [selectedAppliance, setSelectedAppliance] = useState(appliances[0].id)
   const [selectedTechnician, setSelectedTechnician] = useState(technicians[0].id)
   const [bookingConfirmed, setBookingConfirmed] = useState(false)
+  const [formError, setFormError] = useState('')
+  const [bookings, setBookings] = useState(() => {
+    const storedBookings = window.localStorage.getItem(storageKey)
+    return storedBookings ? JSON.parse(storedBookings) : []
+  })
   const [form, setForm] = useState({
     pincode: '110001',
-    name: 'Nikhil',
-    phone: '9876543210',
-    address: 'Sector 12, New Delhi',
-    issue: 'Appliance is not working properly and needs inspection.',
+    name: '',
+    phone: '',
+    address: '',
+    issue: '',
     date: '2026-06-01',
     time: '10:00',
     warranty: 'Unknown',
   })
+
+  useEffect(() => {
+    window.localStorage.setItem(storageKey, JSON.stringify(bookings))
+  }, [bookings])
 
   const matches = useMemo(() => {
     return technicians.filter((technician) => {
@@ -97,7 +107,7 @@ function App() {
 
   const visibleTechnicians = matches.length > 0 ? matches : technicians
   const activeTechnician =
-    technicians.find((technician) => technician.id === selectedTechnician) || visibleTechnicians[0]
+    visibleTechnicians.find((technician) => technician.id === selectedTechnician) || visibleTechnicians[0]
   const activeCompany = companies.find((company) => company.id === selectedCompany)
   const activeAppliance = appliances.find((appliance) => appliance.id === selectedAppliance)
 
@@ -105,6 +115,40 @@ function App() {
     const { name, value } = event.target
     setForm((current) => ({ ...current, [name]: value }))
     setBookingConfirmed(false)
+    setFormError('')
+  }
+
+  function createBooking() {
+    if (!form.name || !form.phone || !form.address || !form.issue) {
+      setFormError('Please fill name, phone, address, and issue before confirming.')
+      return
+    }
+
+    const nextBooking = {
+      id: `ES-${Date.now().toString().slice(-6)}`,
+      company: activeCompany.name,
+      appliance: activeAppliance.name,
+      technician: activeTechnician.name,
+      slot: `${form.date} at ${form.time}`,
+      status: 'Technician assigned',
+      issue: form.issue,
+      pincode: form.pincode,
+      createdAt: new Date().toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      }),
+    }
+
+    setBookings((current) => [nextBooking, ...current])
+    setBookingConfirmed(true)
+    setFormError('')
+  }
+
+  function startNewBooking() {
+    setBookingConfirmed(false)
+    setFormError('')
+    window.location.hash = 'booking'
   }
 
   return (
@@ -120,6 +164,7 @@ function App() {
         <div className="nav-actions">
           <a href="#booking">Book service</a>
           <a href="#technicians">Technicians</a>
+          <a href="#dashboard">Dashboard</a>
           <button type="button">Sign in</button>
         </div>
       </nav>
@@ -133,7 +178,7 @@ function App() {
             keeps the whole service request visible from booking to completion.
           </p>
           <div className="hero-stats" aria-label="Platform highlights">
-            <span><strong>24</strong> active requests</span>
+            <span><strong>{bookings.length}</strong> saved requests</span>
             <span><strong>18</strong> verified technicians</span>
             <span><strong>4.8</strong> avg rating</span>
           </div>
@@ -241,15 +286,21 @@ function App() {
           <div className="form-grid">
             <label>
               Full name
-              <input name="name" value={form.name} onChange={updateForm} />
+              <input name="name" value={form.name} onChange={updateForm} placeholder="Enter customer name" />
             </label>
             <label>
               Phone number
-              <input name="phone" value={form.phone} onChange={updateForm} inputMode="tel" />
+              <input
+                name="phone"
+                value={form.phone}
+                onChange={updateForm}
+                inputMode="tel"
+                placeholder="Enter mobile number"
+              />
             </label>
             <label className="span-two">
               Address
-              <input name="address" value={form.address} onChange={updateForm} />
+              <input name="address" value={form.address} onChange={updateForm} placeholder="House no, area, city" />
             </label>
             <label>
               Preferred date
@@ -273,7 +324,13 @@ function App() {
             </label>
             <label className="span-two">
               Issue description
-              <textarea name="issue" value={form.issue} onChange={updateForm} rows="4" />
+              <textarea
+                name="issue"
+                value={form.issue}
+                onChange={updateForm}
+                rows="4"
+                placeholder="Describe what is not working"
+              />
             </label>
           </div>
         </form>
@@ -326,9 +383,50 @@ function App() {
           <span><strong>Slot</strong>{form.date} at {form.time}</span>
           <span><strong>Status</strong>{bookingConfirmed ? 'Technician assigned' : 'Ready to confirm'}</span>
         </div>
-        <button className="confirm-button" type="button" onClick={() => setBookingConfirmed(true)}>
+        <button className="confirm-button" type="button" onClick={createBooking}>
           Confirm booking
         </button>
+        {formError && <p className="form-error">{formError}</p>}
+        {bookingConfirmed && <p className="success-message">Booking saved to your customer dashboard.</p>}
+      </section>
+
+      <section className="dashboard-section" id="dashboard">
+        <div className="dashboard-header">
+          <div>
+            <span className="eyebrow">Customer dashboard</span>
+            <h2>Your service requests</h2>
+            <p>Confirmed bookings are saved in this browser until we connect the backend.</p>
+          </div>
+          <button type="button" className="secondary-button" onClick={startNewBooking}>
+            New booking
+          </button>
+        </div>
+
+        {bookings.length === 0 ? (
+          <div className="empty-state">
+            <strong>No bookings yet</strong>
+            <p>Fill the service form above and confirm a booking to see it here.</p>
+          </div>
+        ) : (
+          <div className="booking-list">
+            {bookings.map((booking) => (
+              <article className="booking-card" key={booking.id}>
+                <div>
+                  <span className="booking-id">{booking.id}</span>
+                  <h3>{booking.company} {booking.appliance}</h3>
+                  <p>{booking.issue}</p>
+                </div>
+                <div className="booking-facts">
+                  <span><strong>Technician</strong>{booking.technician}</span>
+                  <span><strong>Slot</strong>{booking.slot}</span>
+                  <span><strong>Pincode</strong>{booking.pincode}</span>
+                  <span><strong>Created</strong>{booking.createdAt}</span>
+                </div>
+                <span className="status-pill">{booking.status}</span>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
     </main>
   )
