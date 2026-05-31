@@ -1,0 +1,66 @@
+export const companies = [
+  { id: 'lg', name: 'LG', type: 'Home appliances', verified: true },
+  { id: 'samsung', name: 'Samsung', type: 'Electronics', verified: true },
+  { id: 'philips', name: 'Philips', type: 'Kitchen and personal care', verified: true },
+  { id: 'whirlpool', name: 'Whirlpool', type: 'Cooling and laundry', verified: true },
+  { id: 'hawkins', name: 'Hawkins', type: 'Kitchen appliances', verified: false },
+]
+
+export const appliances = [
+  { id: 'ac', name: 'Air conditioner', short: 'AC', issues: 'Cooling, gas refill, servicing' },
+  { id: 'fridge', name: 'Refrigerator', short: 'RF', issues: 'Not cooling, noise, leakage' },
+  { id: 'washer', name: 'Washing machine', short: 'WM', issues: 'Drainage, spin, vibration' },
+  { id: 'tv', name: 'Television', short: 'TV', issues: 'Display, audio, power' },
+  { id: 'mixer', name: 'Mixer grinder', short: 'MX', issues: 'Motor, jar, blade issues' },
+]
+
+export const technicians = [
+  {
+    id: 1,
+    name: 'Amit Sharma',
+    rating: 4.9,
+    jobs: 312,
+    experience: '7 yrs',
+    area: '110001',
+    skills: ['ac', 'fridge'],
+    companies: ['lg', 'samsung', 'whirlpool'],
+    slot: 'Today, 4:30 PM',
+    charge: 249,
+  },
+  {
+    id: 2,
+    name: 'Neha Verma',
+    rating: 4.8,
+    jobs: 226,
+    experience: '5 yrs',
+    area: '110002',
+    skills: ['washer', 'fridge'],
+    companies: ['lg', 'whirlpool', 'samsung'],
+    slot: 'Today, 6:00 PM',
+    charge: 299,
+  },
+  {
+    id: 3,
+    name: 'Rahul Khan',
+    rating: 4.7,
+    jobs: 188,
+    experience: '4 yrs',
+    area: '110001',
+    skills: ['tv', 'mixer'],
+    companies: ['samsung', 'philips', 'hawkins'],
+    slot: 'Tomorrow, 10:00 AM',
+    charge: 199,
+  },
+  {
+    id: 4,
+    name: 'Priya Nair',
+    rating: 4.9,
+    jobs: 354,
+    experience: '8 yrs',
+    area: '110003',
+    skills: ['ac', 'washer', 'tv'],
+    companies: ['lg', 'samsung', 'philips'],
+    slot: 'Tomorrow, 12:30 PM',
+    charge: 349,
+  },
+]
