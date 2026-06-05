@@ -73,6 +73,16 @@ function ServiceDetailsPage({ form, updateForm }) {
           <button className="confirm-button" type="submit">Find matching technicians</button>
         </div>
       </form>
+
+      <aside className="booking-assist-panel">
+        <span className="eyebrow">Before technician visit</span>
+        <h3>Helpful details improve matching.</h3>
+        <ul>
+          <li>Use the exact pincode for nearby technicians.</li>
+          <li>Mention sounds, leakage, error codes, or power issues.</li>
+          <li>Select warranty status if you know it.</li>
+        </ul>
+      </aside>
     </section>
   )
 }

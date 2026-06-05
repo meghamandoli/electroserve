@@ -23,7 +23,7 @@ function ConfirmationPage({
     <section className="booking-workspace page-shell">
       <BookingStepper activeStep={4} />
       <div className="confirmation-panel route-confirmation">
-        <div>
+        <div className="confirmation-copy">
           <span className="eyebrow">Final step</span>
           <h2>Booking summary</h2>
           <p>
@@ -32,8 +32,11 @@ function ConfirmationPage({
           </p>
         </div>
         <div className="summary-list">
+          <span><strong>Company</strong>{activeCompany.name}</span>
+          <span><strong>Appliance</strong>{activeAppliance.name}</span>
           <span><strong>Technician</strong>{activeTechnician.name}</span>
           <span><strong>Slot</strong>{form.date} at {form.time}</span>
+          <span><strong>Warranty</strong>{form.warranty}</span>
           <span><strong>Status</strong>{bookingConfirmed ? 'Technician assigned' : 'Ready to confirm'}</span>
         </div>
         <button className="confirm-button" type="button" onClick={confirmAndOpenDashboard}>

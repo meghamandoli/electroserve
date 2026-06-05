@@ -115,6 +115,7 @@
 
 .hero-section,
 .auth-section,
+.workflow-strip,
 .section-grid,
 .booking-workspace,
 .technician-section,
@@ -129,7 +130,7 @@
   grid-template-columns: minmax(0, 1.15fr) minmax(320px, 420px);
   gap: 28px;
   align-items: stretch;
-  padding: 48px 0 38px;
+  padding: 48px 0 28px;
 }
 
 .hero-copy {
@@ -173,6 +174,44 @@ h2 {
   margin-top: 16px;
   color: #475569;
   font-size: 17px;
+}
+
+.workflow-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  padding: 8px 0 28px;
+}
+
+.workflow-strip article {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+}
+
+.workflow-strip span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: #2563eb;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.workflow-strip strong {
+  color: #0f172a;
+}
+
+.workflow-strip p {
+  color: #64748b;
+  font-size: 14px;
 }
 
 .hero-stats {
@@ -366,6 +405,10 @@ textarea:focus {
   padding: 28px 0;
 }
 
+.booking-workspace:has(.booking-assist-panel) {
+  grid-template-columns: 180px minmax(0, 1fr) minmax(260px, 0.42fr);
+}
+
 .stepper {
   align-self: start;
   display: grid;
@@ -397,6 +440,32 @@ textarea:focus {
 
 .details-panel {
   padding: 22px;
+}
+
+.booking-assist-panel {
+  align-self: start;
+  display: grid;
+  gap: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.06);
+}
+
+.booking-assist-panel h3 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.booking-assist-panel ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 18px;
+  color: #475569;
 }
 
 .form-grid {
@@ -436,6 +505,10 @@ textarea:focus {
   font-size: 13px;
 }
 
+.metric strong {
+  color: #0f172a;
+}
+
 .badge {
   border-radius: 999px;
   padding: 5px 8px;
@@ -460,12 +533,17 @@ textarea:focus {
 
 .confirmation-panel {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 0.8fr) minmax(320px, 1fr) auto;
   gap: 20px;
   align-items: center;
   margin-top: 24px;
   margin-bottom: 48px;
   padding: 22px;
+}
+
+.confirmation-copy {
+  display: grid;
+  gap: 10px;
 }
 
 .route-confirmation {
@@ -474,8 +552,9 @@ textarea:focus {
 }
 
 .summary-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .summary-list span {
@@ -879,6 +958,7 @@ textarea:focus {
   .topbar,
   .hero-section,
   .auth-section,
+  .workflow-strip,
   .booking-workspace,
   .confirmation-panel,
   .booking-card {
@@ -901,7 +981,8 @@ textarea:focus {
   .option-grid,
   .technician-grid,
   .form-grid,
-  .dashboard-stats {
+  .dashboard-stats,
+  .summary-list {
     grid-template-columns: 1fr;
   }
 

@@ -22,11 +22,11 @@ function HomePage({
     <>
       <section className="hero-section">
         <div className="hero-copy">
-          <span className="eyebrow">Customer MVP</span>
+          <span className="eyebrow">Verified doorstep repair</span>
           <h1>Book trusted appliance repair in minutes.</h1>
           <p>
-            Select your brand, appliance, location, and preferred technician. ElectroServe
-            keeps the whole service request visible from booking to completion.
+            Choose your appliance brand, describe the issue, compare nearby technicians,
+            and track the repair from assignment to completion.
           </p>
           <div className="hero-stats" aria-label="Platform highlights">
             <span><strong>{bookings.length}</strong> saved requests</span>
@@ -70,10 +70,34 @@ function HomePage({
         </form>
       </section>
 
+      <section className="workflow-strip" aria-label="How ElectroServe works">
+        <article>
+          <span>1</span>
+          <strong>Select brand</strong>
+          <p>Choose the company and appliance that needs service.</p>
+        </article>
+        <article>
+          <span>2</span>
+          <strong>Share issue</strong>
+          <p>Add address, warranty status, and repair details.</p>
+        </article>
+        <article>
+          <span>3</span>
+          <strong>Pick technician</strong>
+          <p>Compare verified technicians by rating, slot, and charge.</p>
+        </article>
+        <article>
+          <span>4</span>
+          <strong>Track service</strong>
+          <p>Follow every booking status from dashboard.</p>
+        </article>
+      </section>
+
       <section className="section-grid">
         <div className="section-heading">
           <span className="eyebrow">Step 1</span>
           <h2>Select company</h2>
+          <p>Start with a brand portal. In the backend version, each brand can manage its own technicians.</p>
         </div>
         <div className="option-grid">
           {companies.map((company) => (
@@ -99,6 +123,7 @@ function HomePage({
         <div className="section-heading">
           <span className="eyebrow">Step 2</span>
           <h2>Choose appliance</h2>
+          <p>Pick the appliance category so the system can filter technicians by specialization.</p>
         </div>
         <div className="option-grid appliance-grid">
           {appliances.map((appliance) => (

@@ -42,9 +42,9 @@ function TechniciansPage({
                   <small>{technician.experience} experience | {technician.jobs} jobs</small>
                 </span>
                 <span className="badge success">Verified</span>
-                <span className="metric">{technician.rating} rating</span>
-                <span className="metric">{technician.slot}</span>
-                <span className="charge">Rs. {technician.charge} visit</span>
+                <span className="metric"><strong>{technician.rating}</strong> rating</span>
+                <span className="metric"><strong>{technician.slot}</strong> next slot</span>
+                <span className="charge">Rs. {technician.charge} visit charge</span>
               </button>
             ))}
           </div>
