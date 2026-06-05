@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Topbar from './components/Topbar'
 import { appliances, companies, technicians } from './data/catalog'
 import { getStatusLabel } from './data/statuses'
+import AuthPage from './pages/AuthPage'
 import ConfirmationPage from './pages/ConfirmationPage'
 import DashboardPage from './pages/DashboardPage'
 import HomePage from './pages/HomePage'
@@ -11,6 +12,7 @@ import TechniciansPage from './pages/TechniciansPage'
 import './App.css'
 
 const storageKey = 'electroserveBookings'
+const userStorageKey = 'electroserveCurrentUser'
 
 function normalizeBooking(booking) {
   const legacyStatusMap = {
@@ -36,6 +38,10 @@ function App() {
     const storedBookings = window.localStorage.getItem(storageKey)
     return storedBookings ? JSON.parse(storedBookings).map(normalizeBooking) : []
   })
+  const [currentUser, setCurrentUser] = useState(() => {
+    const storedUser = window.localStorage.getItem(userStorageKey)
+    return storedUser ? JSON.parse(storedUser) : null
+  })
   const [form, setForm] = useState({
     pincode: '110001',
     name: '',
@@ -50,6 +56,14 @@ function App() {
   useEffect(() => {
     window.localStorage.setItem(storageKey, JSON.stringify(bookings))
   }, [bookings])
+
+  useEffect(() => {
+    if (currentUser) {
+      window.localStorage.setItem(userStorageKey, JSON.stringify(currentUser))
+    } else {
+      window.localStorage.removeItem(userStorageKey)
+    }
+  }, [currentUser])
 
   const matches = useMemo(() => {
     return technicians.filter((technician) => {
@@ -117,11 +131,59 @@ function App() {
     )
   }
 
+  function registerUser(authForm) {
+    const nextUser = {
+      name: authForm.name,
+      email: authForm.email,
+      phone: authForm.phone,
+      role: 'customer',
+    }
+    setCurrentUser(nextUser)
+    return nextUser
+  }
+
+  function loginUser(authForm) {
+    const nextUser = {
+      name: authForm.email.split('@')[0] || 'Customer',
+      email: authForm.email,
+      phone: '',
+      role: 'customer',
+    }
+    setCurrentUser(nextUser)
+    return nextUser
+  }
+
+  function logoutUser() {
+    setCurrentUser(null)
+  }
+
   return (
     <BrowserRouter>
       <main className="app-shell">
-        <Topbar />
+        <Topbar currentUser={currentUser} logoutUser={logoutUser} />
         <Routes>
+          <Route
+            path="/login"
+            element={
+              <AuthPage
+                authMode="login"
+                currentUser={currentUser}
+                loginUser={loginUser}
+                registerUser={registerUser}
+              />
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <AuthPage
+                authMode="register"
+                currentUser={currentUser}
+                loginUser={loginUser}
+                registerUser={registerUser}
+              />
+            }
+          />
           <Route
             path="/"
             element={
