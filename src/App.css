@@ -560,10 +560,15 @@ textarea:focus {
 .booking-card {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr) auto;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.85fr) minmax(260px, 0.75fr);
   gap: 18px;
   align-items: start;
   padding: 18px;
+}
+
+.booking-card.is-cancelled {
+  border-color: #fecaca;
+  background: #fffafa;
 }
 
 .booking-id {
@@ -601,6 +606,8 @@ textarea:focus {
 }
 
 .status-pill {
+  display: inline-flex;
+  justify-content: center;
   border-radius: 999px;
   padding: 8px 10px;
   color: #047857;
@@ -608,6 +615,87 @@ textarea:focus {
   font-size: 12px;
   font-weight: 900;
   white-space: nowrap;
+}
+
+.status-submitted {
+  color: #475569;
+  background: #e2e8f0;
+}
+
+.status-assigned {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.status-on-way {
+  color: #92400e;
+  background: #fef3c7;
+}
+
+.status-repairing {
+  color: #4338ca;
+  background: #e0e7ff;
+}
+
+.status-completed {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.status-cancelled {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.booking-status-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.status-timeline {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.timeline-dot {
+  display: grid;
+  place-items: center;
+  height: 28px;
+  border-radius: 999px;
+  color: #64748b;
+  background: #f1f5f9;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.timeline-dot.is-done {
+  color: #ffffff;
+  background: #2563eb;
+}
+
+.status-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.status-actions button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 10px;
+  color: #ffffff;
+  background: #2563eb;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.status-actions .danger-button {
+  color: #b91c1c;
+  background: #fee2e2;
 }
 
 @media (max-width: 920px) {

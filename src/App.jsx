@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Topbar from './components/Topbar'
 import { appliances, companies, technicians } from './data/catalog'
+import { getStatusLabel } from './data/statuses'
 import ConfirmationPage from './pages/ConfirmationPage'
 import DashboardPage from './pages/DashboardPage'
 import HomePage from './pages/HomePage'
@@ -11,6 +12,20 @@ import './App.css'
 
 const storageKey = 'electroserveBookings'
 
+function normalizeBooking(booking) {
+  const legacyStatusMap = {
+    'Technician assigned': 'assigned',
+    'Ready to confirm': 'submitted',
+  }
+  const status = legacyStatusMap[booking.status] || booking.status || 'assigned'
+
+  return {
+    ...booking,
+    status,
+    statusLabel: booking.statusLabel || getStatusLabel(status),
+  }
+}
+
 function App() {
   const [selectedCompany, setSelectedCompany] = useState(companies[0].id)
   const [selectedAppliance, setSelectedAppliance] = useState(appliances[0].id)
@@ -19,7 +34,7 @@ function App() {
   const [formError, setFormError] = useState('')
   const [bookings, setBookings] = useState(() => {
     const storedBookings = window.localStorage.getItem(storageKey)
-    return storedBookings ? JSON.parse(storedBookings) : []
+    return storedBookings ? JSON.parse(storedBookings).map(normalizeBooking) : []
   })
   const [form, setForm] = useState({
     pincode: '110001',
@@ -70,7 +85,8 @@ function App() {
       appliance: activeAppliance.name,
       technician: activeTechnician.name,
       slot: `${form.date} at ${form.time}`,
-      status: 'Technician assigned',
+      status: 'assigned',
+      statusLabel: getStatusLabel('assigned'),
       issue: form.issue,
       pincode: form.pincode,
       createdAt: new Date().toLocaleDateString('en-IN', {
@@ -89,6 +105,16 @@ function App() {
   function startNewBooking() {
     setBookingConfirmed(false)
     setFormError('')
+  }
+
+  function updateBookingStatus(bookingId, status) {
+    setBookings((current) =>
+      current.map((booking) =>
+        booking.id === bookingId
+          ? { ...booking, status, statusLabel: getStatusLabel(status) }
+          : booking,
+      ),
+    )
   }
 
   return (
@@ -145,7 +171,13 @@ function App() {
           />
           <Route
             path="/dashboard"
-            element={<DashboardPage bookings={bookings} startNewBooking={startNewBooking} />}
+            element={
+              <DashboardPage
+                bookings={bookings}
+                startNewBooking={startNewBooking}
+                updateBookingStatus={updateBookingStatus}
+              />
+            }
           />
         </Routes>
       </main>
