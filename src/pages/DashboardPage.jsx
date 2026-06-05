@@ -3,6 +3,12 @@ import { cancelledStatus, getNextStatus, getStatusIndex, getStatusLabel, service
 
 function DashboardPage({ bookings, startNewBooking, updateBookingStatus }) {
   const navigate = useNavigate()
+  const totalBookings = bookings.length
+  const activeBookings = bookings.filter(
+    (booking) => !['completed', cancelledStatus.id].includes(booking.status),
+  ).length
+  const completedBookings = bookings.filter((booking) => booking.status === 'completed').length
+  const cancelledBookings = bookings.filter((booking) => booking.status === cancelledStatus.id).length
 
   function handleNewBooking() {
     startNewBooking()
@@ -22,6 +28,13 @@ function DashboardPage({ bookings, startNewBooking, updateBookingStatus }) {
         </button>
       </div>
 
+      <div className="dashboard-stats" aria-label="Service request summary">
+        <SummaryCard label="Total requests" value={totalBookings} tone="blue" />
+        <SummaryCard label="Active services" value={activeBookings} tone="amber" />
+        <SummaryCard label="Completed" value={completedBookings} tone="green" />
+        <SummaryCard label="Cancelled" value={cancelledBookings} tone="red" />
+      </div>
+
       {bookings.length === 0 ? (
         <div className="empty-state">
           <strong>No bookings yet</strong>
@@ -38,6 +51,15 @@ function DashboardPage({ bookings, startNewBooking, updateBookingStatus }) {
   )
 }
 
+function SummaryCard({ label, tone, value }) {
+  return (
+    <article className={`summary-card tone-${tone}`}>
+      <span>{label}</span>
+      <strong>{value}</strong>
+    </article>
+  )
+}
+
 function BookingCard({ booking, updateBookingStatus }) {
   const isCancelled = booking.status === cancelledStatus.id
   const isCompleted = booking.status === 'completed'
@@ -47,8 +69,11 @@ function BookingCard({ booking, updateBookingStatus }) {
 
   return (
     <article className={`booking-card ${isCancelled ? 'is-cancelled' : ''}`}>
-      <div>
-        <span className="booking-id">{booking.id}</span>
+      <div className="booking-main">
+        <div className="booking-title-row">
+          <span className="booking-id">{booking.id}</span>
+          <span className={`status-pill compact-status status-${booking.status}`}>{statusLabel}</span>
+        </div>
         <h3>{booking.company} {booking.appliance}</h3>
         <p>{booking.issue}</p>
       </div>
@@ -59,7 +84,7 @@ function BookingCard({ booking, updateBookingStatus }) {
         <span><strong>Created</strong>{booking.createdAt}</span>
       </div>
       <div className="booking-status-panel">
-        <span className={`status-pill status-${booking.status}`}>{statusLabel}</span>
+        <span className="panel-label">Service progress</span>
         <div className="status-timeline" aria-label={`${booking.id} service progress`}>
           {serviceStatuses.map((status, index) => (
             <span
@@ -69,6 +94,11 @@ function BookingCard({ booking, updateBookingStatus }) {
             >
               {index + 1}
             </span>
+          ))}
+        </div>
+        <div className="timeline-labels">
+          {serviceStatuses.map((status) => (
+            <span key={status.id}>{status.label.replace('Technician ', '')}</span>
           ))}
         </div>
         <div className="status-actions">
